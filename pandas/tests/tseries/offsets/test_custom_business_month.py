@@ -31,7 +31,7 @@ from pandas.tests.tseries.offsets.common import (
 )
 from pandas.tests.tseries.offsets.test_offsets import _ApplyCases
 
-from pandas.tseries import offsets as offsets
+from pandas.tseries import offsets as offs
 from pandas.tseries.holiday import USFederalHolidayCalendar
 
 
@@ -112,7 +112,7 @@ class TestCustomBusinessMonthBegin:
         result = offset.rollforward(dt)
         assert result == datetime(2012, 10, 1)
 
-        offset = offsets.Day()
+        offset = offs.Day()
         result = offset.rollback(dt)
         assert result == datetime(2012, 9, 15)
 
@@ -310,7 +310,7 @@ class TestCustomBusinessMonthEnd:
         result = offset.rollforward(dt)
         assert result == datetime(2012, 9, 28)
 
-        offset = offsets.Day()
+        offset = offs.Day()
         result = offset.rollback(dt)
         assert result == datetime(2012, 9, 15)
 

@@ -22,7 +22,7 @@ from pandas.tests.io.pytables.common import (
     tables,
 )
 
-from pandas.io import pytables as pytables
+from pandas.io import pytables as pyts
 from pandas.io.pytables import Term
 
 pytestmark = pytest.mark.single_cpu
@@ -331,7 +331,7 @@ def test_multiple_open_close(tmp_path, setup_path):
 
     path = tmp_path / setup_path
 
-    if pytables._table_file_open_policy_is_strict:
+    if pyts._table_file_open_policy_is_strict:
         # multiples
         store1 = HDFStore(path)
         msg = (

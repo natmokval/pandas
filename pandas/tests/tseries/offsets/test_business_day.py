@@ -28,7 +28,7 @@ from pandas.tests.tseries.offsets.common import (
     assert_offset_equal,
 )
 
-from pandas.tseries import offsets as offsets
+from pandas.tseries import offsets as offs
 
 
 @pytest.fixture
@@ -121,7 +121,7 @@ class TestBusinessDay:
         result = offset.rollforward(dt)
         assert result == datetime(2012, 9, 17)
 
-        offset = offsets.Day()
+        offset = offs.Day()
         result = offset.rollback(dt)
         assert result == datetime(2012, 9, 15)
 
