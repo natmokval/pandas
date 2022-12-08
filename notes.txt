@@ -1,0 +1,103 @@
+
+1) run in ps
+1.bat
+2) run in cmd
+C:\BuildTools\VC\Auxiliary\Build\vcvars64.bat
+3) mamba env create
+4) python setup.py build_ext -j 1 --force
+5) python -m pip install -e . --no-build-isolation --no-use-pep517
+
+
+1.bat
+"C:\Users\User\Downloads\vs_BuildTools.exe" --quiet --wait --norestart --nocache ^
+    --installPath C:\BuildTools ^
+    --add Microsoft.VisualStudio.Component.Roslyn.Compiler ^
+    --add Microsoft.Component.MSBuild ^
+    --add Microsoft.VisualStudio.Component.CoreBuildTools ^
+    --add Microsoft.VisualStudio.Workload.MSBuildTools ^
+    --add Microsoft.VisualStudio.Component.Windows10SDK ^
+    --add Microsoft.VisualStudio.Component.VC.CoreBuildTools ^
+    --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 ^
+    --add Microsoft.VisualStudio.Component.VC.Redist.14.Latest ^
+    --add Microsoft.VisualStudio.Component.Windows11SDK.22000 ^
+    --add Microsoft.VisualStudio.Component.VC.CMake.Project ^
+    --add Microsoft.VisualStudio.Component.TestTools.BuildTools ^
+    --add Microsoft.VisualStudio.Component.VC.ASAN ^
+    --add Microsoft.VisualStudio.Component.TextTemplating ^
+    --add Microsoft.VisualStudio.Component.VC.CoreIde ^
+    --add Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core ^
+    --add Microsoft.VisualStudio.Workload.VCTools
+
+
+
+
+
+
+
+
+
+
+
+
+
+ type C:\Users\User\Documents\.vsconfig
+
+
+
+"C:\Users\User\Downloads\vs_BuildTools.exe" --quiet --wait --norestart --nocache ^
+    --installPath C:\BuildTools ^
+    --add "Microsoft.VisualStudio.Workload.VCTools;includeRecommended" ^
+    --add Microsoft.VisualStudio.Component.VC.v141 ^
+    --add Microsoft.VisualStudio.Component.VC.v141.x86.x64 ^
+    --add Microsoft.VisualStudio.Component.Windows10SDK
+
+
+
+Var 1 doesn't work
+ "C:\Users\User\Downloads\vs_BuildTools.exe" --quiet --wait --norestart --nocache ^
+    --installPath C:\BuildTools ^
+    --add "Microsoft.VisualStudio.Workload.VCTools;includeRecommended" ^
+    --add Microsoft.VisualStudio.Component.VC.v141 ^
+    --add Microsoft.VisualStudio.Component.VC.v141.x86.x64 ^
+    --add Microsoft.VisualStudio.Component.Windows10SDK.17763
+    
+ C:\BuildTools\VC\Auxiliary\Build\vcvars64.bat   
+
+{  
+  "version": "1.0",
+  "components": [
+    "Microsoft.VisualStudio.Component.Roslyn.Compiler",
+    "Microsoft.Component.MSBuild",
+    "Microsoft.VisualStudio.Component.CoreBuildTools",
+    "Microsoft.VisualStudio.Workload.MSBuildTools",
+    "Microsoft.VisualStudio.Component.Windows10SDK",
+    "Microsoft.VisualStudio.Component.VC.CoreBuildTools",
+    "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+    "Microsoft.VisualStudio.Component.VC.Redist.14.Latest",
+    "Microsoft.VisualStudio.Component.Windows11SDK.22000",
+    "Microsoft.VisualStudio.Component.VC.CMake.Project",
+    "Microsoft.VisualStudio.Component.TestTools.BuildTools",
+    "Microsoft.VisualStudio.Component.VC.ASAN",
+    "Microsoft.VisualStudio.Component.TextTemplating",
+    "Microsoft.VisualStudio.Component.VC.CoreIde",
+    "Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core",
+    "Microsoft.VisualStudio.Workload.VCTools"
+  ]
+}
+
+
+UPDATE number of version of VS to 2022 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ci\fix_wheels.py
+# TODO: figure out how licensing works for the redistributables
+        base_redist_dir = (
+            f"C:/Program Files (x86)/Microsoft Visual Studio/2019/"
+            f"Enterprise/VC/Redist/MSVC/14.29.30133/{PYTHON_ARCH}/"
+            f"Microsoft.VC142.CRT/"
+        )
+
+      
+      
+!pip install -r requirements.txt --use-deprecated=legacy-resolver
+
+
+python -m pip install -e . --no-build-isolation --no-use-pep517
