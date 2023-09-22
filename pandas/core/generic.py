@@ -9024,7 +9024,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
 
         Examples
         --------
-        >>> i = pd.date_range('2018-04-09', periods=4, freq='12H')
+        >>> i = pd.date_range('2018-04-09', periods=4, freq='12h')
         >>> ts = pd.DataFrame({'A': [1, 2, 3, 4]}, index=i)
         >>> ts
                              A
@@ -11365,7 +11365,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         2015-03-29 01:59:59.999999999+01:00    0
         2015-03-29 03:30:00+02:00              1
         dtype: int64
-        >>> s.tz_localize('Europe/Warsaw', nonexistent=pd.Timedelta('1H'))
+        >>> s.tz_localize('Europe/Warsaw', nonexistent=pd.Timedelta('1h'))
         2015-03-29 03:30:00+02:00    0
         2015-03-29 03:30:00+02:00    1
         dtype: int64
@@ -12532,6 +12532,39 @@ Returns
 {examples}
 """
 
+_sum_prod_doc = """
+{desc}
+
+Parameters
+----------
+axis : {axis_descr}
+    Axis for the function to be applied on.
+    For `Series` this parameter is unused and defaults to 0.
+
+    .. warning::
+
+        The behavior of {name1}.{name1} with ``axis=None`` is deprecated,
+        in a future version this will reduce over both axes and return a scalar
+        To retain the old behavior, pass axis=0 (or do not pass axis).
+
+    .. versionadded:: 2.0.0
+
+skipna : bool, default True
+    Exclude NA/null values when computing the result.
+numeric_only : bool, default False
+    Include only float, int, boolean columns. Not implemented for Series.
+
+{min_count}\
+**kwargs
+    Additional keyword arguments to be passed to the function.
+
+Returns
+-------
+{name1} or scalar\
+{see_also}\
+{examples}
+"""
+
 _num_ddof_doc = """
 {desc}
 
@@ -12539,6 +12572,13 @@ Parameters
 ----------
 axis : {axis_descr}
     For `Series` this parameter is unused and defaults to 0.
+
+    .. warning::
+
+        The behavior of {name1}.{name} with ``axis=None`` is deprecated,
+        in a future version this will reduce over both axes and return a scalar
+        To retain the old behavior, pass axis=0 (or do not pass axis).
+
 skipna : bool, default True
     Exclude NA/null values. If an entire row/column is NA, the result
     will be NA.
@@ -13246,7 +13286,7 @@ def make_doc(name: str, ndim: int) -> str:
         kwargs = {"min_count": ""}
 
     elif name == "sum":
-        base_doc = _num_doc
+        base_doc = _sum_prod_doc
         desc = (
             "Return the sum of the values over the requested axis.\n\n"
             "This is equivalent to the method ``numpy.sum``."
@@ -13256,7 +13296,7 @@ def make_doc(name: str, ndim: int) -> str:
         kwargs = {"min_count": _min_count_stub}
 
     elif name == "prod":
-        base_doc = _num_doc
+        base_doc = _sum_prod_doc
         desc = "Return the product of the values over the requested axis."
         see_also = _stat_func_see_also
         examples = _prod_examples
@@ -13540,6 +13580,7 @@ def make_doc(name: str, ndim: int) -> str:
 
     docstr = base_doc.format(
         desc=desc,
+        name=name,
         name1=name1,
         name2=name2,
         axis_descr=axis_descr,
