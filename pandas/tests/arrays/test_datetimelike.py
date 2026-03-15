@@ -8,7 +8,6 @@ import pytest
 
 from pandas._libs import (
     NaT,
-    OutOfBoundsDatetime,
     Timestamp,
 )
 from pandas._libs.tslibs import to_offset
@@ -1110,28 +1109,25 @@ class TestPeriodArray(SharedTests):
         parr = dta.to_period()
         result = parr.to_timestamp()
         assert result.freq == "B"
-        tm.assert_extension_array_equal(result, dta)
+        tm.assert_extension_array_equal(result, dta.as_unit("us"))
 
         dta2 = dta[::2]
         parr2 = dta2.to_period()
         result2 = parr2.to_timestamp()
         assert result2.freq == "2B"
-        tm.assert_extension_array_equal(result2, dta2)
+        tm.assert_extension_array_equal(result2, dta2.as_unit("us"))
 
         parr3 = dta.to_period("2B")
         result3 = parr3.to_timestamp()
         assert result3.freq == "B"
-        tm.assert_extension_array_equal(result3, dta)
+        tm.assert_extension_array_equal(result3, dta.as_unit("us"))
 
     def test_to_timestamp_out_of_bounds(self):
         # GH#19643 previously overflowed silently
         pi = pd.period_range("1500", freq="Y", periods=3)
-        msg = "Out of bounds nanosecond timestamp: 1500-01-01 00:00:00"
-        with pytest.raises(OutOfBoundsDatetime, match=msg):
-            pi.to_timestamp()
-
-        with pytest.raises(OutOfBoundsDatetime, match=msg):
-            pi._data.to_timestamp()
+        pi.to_timestamp()
+        dta = pi._data.to_timestamp()
+        assert dta[0] == Timestamp(1500, 1, 1)
 
     @pytest.mark.parametrize("propname", PeriodArray._bool_ops)
     def test_bool_properties(self, arr1d, propname):
@@ -1392,3 +1388,40 @@ def test_from_pandas_array(dtype):
     result = idx_cls(arr)
     expected = idx_cls(data)
     tm.assert_index_equal(result, expected)
+
+
+@pytest.mark.parametrize(
+    "self_unit,val_unit",
+    [("s", "ns"), ("ms", "us"), ("us", "ns"), ("ns", "s")],
+)
+@pytest.mark.parametrize("dtype_kind", ["M", "m"])
+def test_isin_mismatched_reso(dtype_kind, self_unit, val_unit):
+    # GH64545 - isin should not silently truncate finer-resolution values
+    #  when converting to self's resolution, which leads to false matches.
+    if dtype_kind == "M":
+        # DatetimeArray
+        arr = DatetimeArray._from_sequence(
+            np.array([0, 1], dtype=f"M8[{self_unit}]"),
+            dtype=np.dtype(f"M8[{self_unit}]"),
+        )
+        vals = DatetimeArray._from_sequence(
+            np.array([1], dtype=f"M8[{val_unit}]"),
+            dtype=np.dtype(f"M8[{val_unit}]"),
+        )
+    else:
+        # TimedeltaArray
+        arr = TimedeltaArray._from_sequence(
+            np.array([0, 1], dtype=f"m8[{self_unit}]"),
+            dtype=np.dtype(f"m8[{self_unit}]"),
+        )
+        vals = TimedeltaArray._from_sequence(
+            np.array([1], dtype=f"m8[{val_unit}]"),
+            dtype=np.dtype(f"m8[{val_unit}]"),
+        )
+
+    result = arr.isin(vals)
+
+    # 1 in self_unit != 1 in val_unit (unless they happen to be the same
+    # unit, which our parametrization avoids), so isin should be [False, False].
+    expected = np.array([False, False])
+    tm.assert_numpy_array_equal(result, expected)
